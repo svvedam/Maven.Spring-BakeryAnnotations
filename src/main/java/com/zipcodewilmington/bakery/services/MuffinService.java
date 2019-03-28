@@ -2,6 +2,7 @@ package com.zipcodewilmington.bakery.services;
 
 import com.zipcodewilmington.bakery.models.Muffin;
 import com.zipcodewilmington.bakery.repositories.MuffinRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 public class MuffinService {
     private MuffinRepository repository;
 
+    @Autowired
     public MuffinService(MuffinRepository repository) {
         this.repository = repository;
     }

@@ -3,17 +3,22 @@ package com.zipcodewilmington.bakery.controllers;
 
 import com.zipcodewilmington.bakery.models.Muffin;
 import com.zipcodewilmington.bakery.repositories.MuffinRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -30,8 +35,8 @@ public class MuffinControllerTest {
     public void testShow() throws Exception {
         Long givenId = 1L;
         BDDMockito
-                .given(repository.findById(givenId).get())
-                .willReturn(new Muffin("blueberry"));
+                .given(repository.findById(givenId))
+                .willReturn(Optional.of(new Muffin("blueberry")));
 
         String expectedContent = "{\"id\":null,\"flavor\":\"blueberry\"}";
         this.mvc.perform(MockMvcRequestBuilders
@@ -49,8 +54,13 @@ public class MuffinControllerTest {
 
         String expectedContent = "{\"id\":null,\"flavor\":\"blueberry\"}";
         this.mvc.perform(MockMvcRequestBuilders
-                .post("/muffins/"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string(expectedContent));
+                .post("/muffins/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(expectedContent)
+            )
+                //.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andExpect(MockMvcResultMatchers.content().string(expectedContent));
     }
 }
